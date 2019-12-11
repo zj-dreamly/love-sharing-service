@@ -244,9 +244,6 @@ public class Page<E> extends ArrayList<E> {
 
 	/**
 	 * 设置页码
-	 *
-	 * @param pageNum
-	 * @return
 	 */
 	public Page<E> pageNum(int pageNum) {
 		//分页合理化，针对不合理的页码自动处理
@@ -256,9 +253,6 @@ public class Page<E> extends ArrayList<E> {
 
 	/**
 	 * 设置页面大小
-	 *
-	 * @param pageSize
-	 * @return
 	 */
 	public Page<E> pageSize(int pageSize) {
 		this.pageSize = pageSize;
@@ -268,9 +262,6 @@ public class Page<E> extends ArrayList<E> {
 
 	/**
 	 * 是否执行count查询
-	 *
-	 * @param count
-	 * @return
 	 */
 	public Page<E> count(Boolean count) {
 		this.count = count;
@@ -279,9 +270,6 @@ public class Page<E> extends ArrayList<E> {
 
 	/**
 	 * 设置合理化
-	 *
-	 * @param reasonable
-	 * @return
 	 */
 	public Page<E> reasonable(Boolean reasonable) {
 		setReasonable(reasonable);
@@ -290,9 +278,6 @@ public class Page<E> extends ArrayList<E> {
 
 	/**
 	 * 当设置为true的时候，如果pagesize设置为0（或RowBounds的limit=0），就不执行分页，返回全部结果
-	 *
-	 * @param pageSizeZero
-	 * @return
 	 */
 	public Page<E> pageSizeZero(Boolean pageSizeZero) {
 		setPageSizeZero(pageSizeZero);
@@ -301,9 +286,6 @@ public class Page<E> extends ArrayList<E> {
 
 	/**
 	 * 指定 count 查询列
-	 *
-	 * @param columnName
-	 * @return
 	 */
 	public Page<E> countColumn(String columnName) {
 		this.countColumn = columnName;
@@ -311,25 +293,26 @@ public class Page<E> extends ArrayList<E> {
 	}
 
 	public PageInfo<E> toPageInfo() {
-		PageInfo<E> pageInfo = new PageInfo<E>(this);
-		return pageInfo;
+		return new PageInfo<E>(this);
 	}
 
 	public PageSerializable<E> toPageSerializable() {
-		PageSerializable<E> serializable = new PageSerializable<E>(this);
-		return serializable;
+		return new PageSerializable<E>(this);
 	}
 
+	@SuppressWarnings("unchecked")
 	public <E> Page<E> doSelectPage(ISelect select) {
 		select.doSelect();
 		return (Page<E>) this;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <E> PageInfo<E> doSelectPageInfo(ISelect select) {
 		select.doSelect();
 		return (PageInfo<E>) this.toPageInfo();
 	}
 
+	@SuppressWarnings("unchecked")
 	public <E> PageSerializable<E> doSelectPageSerializable(ISelect select) {
 		select.doSelect();
 		return (PageSerializable<E>) this.toPageSerializable();
