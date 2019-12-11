@@ -14,6 +14,8 @@ spring:
     nacos:
       discovery:
         server-addr: localhost:8848
+      config:
+        server-addr: localhost:8848
 management:
   endpoints:
     web:
@@ -22,7 +24,3 @@ management:
   endpoint:
     health:
       show-details: always
-
-mini:
-  appKey: wx11fe03e772eb1a6b
-  appSecret: 899ed97160b16970261a0c910dee66e2
