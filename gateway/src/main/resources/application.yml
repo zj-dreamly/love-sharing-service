@@ -20,7 +20,7 @@ spring:
         - id: content_route
           uri: lb://content-center
           predicates:
-            - Path=/shares/**,/admin/**
+            - Path=/shares/**,/admin/**,/notices/newest
 management:
   endpoints:
     web:
