@@ -1,5 +1,5 @@
 server:
-  port: 8040
+  port: 8060
 
 spring:
   profiles:
@@ -8,3 +8,21 @@ spring:
     url: jdbc:mysql://localhost/love-sharing?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true
     username: root
     password: root
+  application:
+    name: user-center
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+
+mini:
+  appKey: wx11fe03e772eb1a6b
+  appSecret: 899ed97160b16970261a0c910dee66e2

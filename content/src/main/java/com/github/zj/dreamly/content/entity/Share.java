@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -16,7 +19,10 @@ import java.util.Date;
  * @since 2019-12-11
  */
 @Data
+@Builder
 @ApiModel(value = "Share对象", description = "分享表")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Share implements Serializable {
 
 	private static final long serialVersionUID = 1L;

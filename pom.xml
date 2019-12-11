@@ -12,13 +12,14 @@
         <module>user</module>
         <module>content</module>
         <module>common</module>
+        <module>gateway</module>
     </modules>
 
     <properties>
         <java.version>1.8</java.version>
         <spring.boot.version>2.1.5.RELEASE</spring.boot.version>
         <spring.cloud.version>Greenwich.SR3</spring.cloud.version>
-        <alibaba.version>2.1.0.RELEASE</alibaba.version>
+        <spring.cloud.alibaba.version>2.1.0.RELEASE</spring.cloud.alibaba.version>
         <spring.platform.version>Cairo-SR8</spring.platform.version>
         <lombok.version>1.18.10</lombok.version>
     </properties>
@@ -38,7 +39,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>Greenwich.SR1</version>
+                <version>${spring.cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -46,7 +47,7 @@
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>${alibaba.version}</version>
+                <version>${spring.cloud.alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -54,6 +55,13 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.spring.platform</groupId>
+                <artifactId>platform-bom</artifactId>
+                <version>${spring.platform.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

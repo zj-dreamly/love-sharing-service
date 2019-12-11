@@ -1,15 +1,14 @@
 package com.github.zj.dreamly.content.controller;
 
 import com.github.zj.dreamly.content.content.ShareDTO;
+import com.github.zj.dreamly.content.dto.share.ShareRequestDTO;
 import com.github.zj.dreamly.content.entity.Share;
 import com.github.zj.dreamly.content.service.ShareService;
 import com.github.zj.dreamly.content.util.PageInfo;
 import com.zj.dreamly.common.auth.CheckLogin;
 import com.zj.dreamly.common.util.JwtOperator;
-import io.jsonwebtoken.Claims;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @AllArgsConstructor
-@RequestMapping("shares")
+@RequestMapping("/shares")
 @Api(value = "分享表", tags = "分享表接口")
 @Validated
 public class ShareController {
@@ -31,7 +30,7 @@ public class ShareController {
 	private final ShareService shareService;
 	private final JwtOperator jwtOperator;
 
-	@GetMapping("/{id}")
+	@GetMapping("/preview/{id}")
 	@CheckLogin
 	public ShareDTO findById(@PathVariable Integer id) {
 		return this.shareService.getByShareId(id);
@@ -44,11 +43,7 @@ public class ShareController {
 		@RequestParam(required = false, defaultValue = "10") Integer pageSize,
 		@RequestHeader(value = "X-Token", required = false) String token) {
 
-		Integer userId = null;
-		if (StringUtils.isNotBlank(token)) {
-			Claims claims = this.jwtOperator.getClaimsFromToken(token);
-			userId = (Integer) claims.get("id");
-		}
+		Integer userId = jwtOperator.getUserId(token);
 		return this.shareService.q(title, pageNo, pageSize, userId);
 	}
 
@@ -56,6 +51,15 @@ public class ShareController {
 	@CheckLogin
 	public Share exchangeById(@PathVariable Integer id, HttpServletRequest request) {
 		return this.shareService.exchangeById(id, request);
+	}
+
+	@PostMapping("/contribute")
+	@CheckLogin
+	public Share contribute(@RequestHeader(value = "X-Token", required = false) String token,
+							@RequestBody ShareRequestDTO shareRequestDTO) {
+
+		Integer userId = jwtOperator.getUserId(token);
+		return this.shareService.contribute(userId, shareRequestDTO);
 	}
 
 }

@@ -16,17 +16,29 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionErrorHandler {
-    @ExceptionHandler(SecurityException.class)
-    public ResponseEntity<ErrorBody> error(SecurityException e) {
-        log.warn("发生SecurityException异常", e);
-        return new ResponseEntity<>(
-            ErrorBody.builder()
-                .body(e.getMessage())
-                .status(HttpStatus.UNAUTHORIZED.value())
-                .build(),
-            HttpStatus.UNAUTHORIZED
-        );
-    }
+	@ExceptionHandler(SecurityException.class)
+	public ResponseEntity<ErrorBody> error(SecurityException e) {
+		log.warn("发生SecurityException异常", e);
+		return new ResponseEntity<>(
+			ErrorBody.builder()
+				.body(e.getMessage())
+				.status(HttpStatus.UNAUTHORIZED.value())
+				.build(),
+			HttpStatus.UNAUTHORIZED
+		);
+	}
+
+	@ExceptionHandler(RuntimeException.class)
+	public ResponseEntity<ErrorBody> business(RuntimeException e) {
+		log.warn("请求异常", e);
+		return new ResponseEntity<>(
+			ErrorBody.builder()
+				.body(e.getMessage())
+				.status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+				.build(),
+			HttpStatus.INTERNAL_SERVER_ERROR
+		);
+	}
 }
 
 @Data
@@ -34,6 +46,6 @@ public class GlobalExceptionErrorHandler {
 @AllArgsConstructor
 @NoArgsConstructor
 class ErrorBody {
-    private String body;
-    private int status;
+	private String body;
+	private int status;
 }

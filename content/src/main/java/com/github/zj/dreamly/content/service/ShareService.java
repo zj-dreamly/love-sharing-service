@@ -3,6 +3,7 @@ package com.github.zj.dreamly.content.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.zj.dreamly.content.content.ShareAuditDTO;
 import com.github.zj.dreamly.content.content.ShareDTO;
+import com.github.zj.dreamly.content.dto.share.ShareRequestDTO;
 import com.github.zj.dreamly.content.entity.Share;
 import com.github.zj.dreamly.content.util.PageInfo;
 
@@ -52,4 +53,13 @@ public interface ShareService extends IService<Share> {
 	 * @return {@link Share}
 	 */
 	Share auditById(Integer id, ShareAuditDTO auditDTO);
+
+	/**
+	 * 投稿接口
+	 *
+	 * @param userId 当前用户id
+	 * @param shareRequestDTO {@link ShareRequestDTO}
+	 * @return {@link Share}
+	 */
+	Share contribute(Integer userId, ShareRequestDTO shareRequestDTO);
 }
