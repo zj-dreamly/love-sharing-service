@@ -5,6 +5,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -105,6 +106,22 @@ public class JwtOperator {
 			// 支持的算法详见：https://github.com/jwtk/jjwt#features
 			.signWith(key, SignatureAlgorithm.HS256)
 			.compact();
+	}
+
+	/**
+	 * 为指定用户生成token
+	 *
+	 * @param token token
+	 * @return 用户id
+	 */
+	public Integer getUserId(String token) {
+		Integer userId = null;
+		if (StringUtils.isNotBlank(token)) {
+			Claims claims = this.getClaimsFromToken(token);
+			userId = (Integer) claims.get("id");
+		}
+
+		return userId;
 	}
 
 	/**
