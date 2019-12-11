@@ -6,6 +6,7 @@ import com.github.zj.dreamly.user.dto.messaging.UserAddBonusMsgDTO;
 import com.github.zj.dreamly.user.dto.user.*;
 import com.github.zj.dreamly.user.entity.User;
 import com.github.zj.dreamly.user.service.UserService;
+import com.zj.dreamly.common.auth.CheckLogin;
 import com.zj.dreamly.common.util.JwtOperator;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,7 @@ import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +28,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("users")
+@RequestMapping("/users")
 @Api(value = "分享", tags = "分享接口")
 @Validated
 public class UserController {
@@ -94,6 +96,13 @@ public class UserController {
 				.build()
 		);
 		return this.userService.getById(userId);
+	}
+
+	@GetMapping("/me")
+	@CheckLogin
+	public User me(HttpServletRequest request) {
+		final Integer id = Integer.valueOf(request.getAttribute("id").toString());
+		return userService.getById(id);
 	}
 
 }

@@ -42,6 +42,7 @@
             <artifactId>weixin-java-miniapp</artifactId>
             <version>${miniapp.version}</version>
         </dependency>
+
     </dependencies>
 
 </project>
