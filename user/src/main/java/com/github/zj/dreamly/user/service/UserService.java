@@ -1,9 +1,9 @@
 package com.github.zj.dreamly.user.service;
 
-import com.github.zj.dreamly.user.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.github.zj.dreamly.tool.util.PageQuery;
+import com.github.zj.dreamly.user.dto.messaging.UserAddBonusMsgDTO;
+import com.github.zj.dreamly.user.dto.user.UserLoginDTO;
+import com.github.zj.dreamly.user.entity.User;
 
 /**
  * 分享 服务类
@@ -13,40 +13,18 @@ import com.github.zj.dreamly.tool.util.PageQuery;
  */
 public interface UserService extends IService<User> {
 
-    /**
-     * 根据id查询分享
-     *
-     * @param id 主键id
-     * @return {@link User}
-     */
-    User getUserById(Long id);
+	/**
+	 * 小程序登录方法
+	 *
+	 * @param loginDTO {@link com.github.zj.dreamly.user.dto.user.LoginRespDTO}
+	 * @param openid   微信在小程序的唯一标识
+	 * @return 登录用户
+	 */
+	User login(UserLoginDTO loginDTO, String openid);
 
-    /**
-     * 分页查询分享
-     *
-     * @param query {@link PageQuery}
-     * @return {@link User}
-     */
-    IPage<User> getUserPage(PageQuery query);
-
-    /**
-     * 新增分享
-     *
-     * @param user {@link User}
-     */
-    void saveUser(User user);
-
-    /**
-     * 修改分享
-     *
-     * @param user {@link User}
-     */
-    void updateUserById(User user);
-
-    /**
-     * 删除分享
-     *
-     * @param id 主键id
-     */
-    void removeUserById(Long id);
+	/**
+	 *  给用户添加几分
+	 * @param msgDTO {@link UserAddBonusMsgDTO}
+	 */
+	public void addBonus(UserAddBonusMsgDTO msgDTO);
 }

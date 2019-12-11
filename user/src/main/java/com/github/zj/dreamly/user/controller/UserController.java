@@ -1,17 +1,21 @@
 package com.github.zj.dreamly.user.controller;
 
-import com.github.zj.dreamly.tool.api.ResponseEntity;
-import io.swagger.annotations.*;
-import lombok.AllArgsConstructor;
-import javax.validation.Valid;
-import com.github.zj.dreamly.tool.util.PageQuery;
-import com.github.zj.dreamly.swagger.constant.DataType;
-import com.github.zj.dreamly.swagger.constant.ParamType;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import cn.binarywang.wx.miniapp.api.WxMaService;
+import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
+import com.github.zj.dreamly.user.dto.messaging.UserAddBonusMsgDTO;
+import com.github.zj.dreamly.user.dto.user.*;
 import com.github.zj.dreamly.user.entity.User;
 import com.github.zj.dreamly.user.service.UserService;
+import com.zj.dreamly.common.util.JwtOperator;
+import io.swagger.annotations.Api;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.error.WxErrorException;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 分享 控制器
@@ -19,71 +23,77 @@ import com.github.zj.dreamly.user.service.UserService;
  * @author 苍海之南
  * @since 2019-12-10
  */
+@Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("Users")
+@RequestMapping("users")
 @Api(value = "分享", tags = "分享接口")
 @Validated
 public class UserController {
 
-	private UserService userService;
+	private final UserService userService;
+	private final WxMaService wxMaService;
+	private final JwtOperator jwtOperator;
 
-	/**
-	* 获取分享详情
-	*/
-	@GetMapping("/{id}")
-    @ApiOperationSupport(order = 1)
-	@ApiOperation(value = "获取分享详情数据", notes = "传入主键id")
-    @ApiImplicitParams({@ApiImplicitParam(name = "id", value = "用户编号", dataType = DataType.STRING, paramType = ParamType.PATH)})
-	public ResponseEntity<User> detail(@PathVariable("id") String id) {
-		return ResponseEntity.data(userService.getUserById(Long.valueOf(id)));
+	@PostMapping("/login")
+	public LoginRespDTO login(@RequestBody UserLoginDTO loginDTO) throws WxErrorException {
+		// 微信小程序服务端校验是否已经登录的结果
+		WxMaJscode2SessionResult result = this.wxMaService.getUserService()
+			.getSessionInfo(loginDTO.getCode());
+
+		// 微信的openId，用户在微信这边的唯一标示
+		String openid = result.getOpenid();
+
+		// 看用户是否注册，如果没有注册就（插入）
+		// 如果已经注册
+		User user = this.userService.login(loginDTO, openid);
+
+		// 颁发token
+		Map<String, Object> userInfo = new HashMap<>(3);
+		userInfo.put("id", user.getId());
+		userInfo.put("wxNickname", user.getWxNickname());
+		userInfo.put("role", user.getRoles());
+
+		String token = jwtOperator.generateToken(userInfo);
+
+		log.info(
+			"用户{}登录成功，生成的token = {}, 有效期到:{}",
+			loginDTO.getWxNickname(),
+			token,
+			jwtOperator.getExpirationTime()
+		);
+
+		// 构建响应
+		return LoginRespDTO.builder()
+			.user(
+				UserRespDTO.builder()
+					.id(user.getId())
+					.avatarUrl(user.getAvatarUrl())
+					.bonus(user.getBonus())
+					.wxNickname(user.getWxNickname())
+					.build()
+			)
+			.token(
+				JwtTokenRespDTO.builder()
+					.expirationTime(jwtOperator.getExpirationTime().getTime())
+					.token(token)
+					.build()
+			)
+			.build();
 	}
 
-	/**
-	* 获取分享列表
-	*/
-	@GetMapping("/page")
-    @ApiOperationSupport(order = 2)
-	@ApiOperation(value = "获取分享列表", notes = "传入page")
-    @ApiImplicitParams({
-        @ApiImplicitParam(value = "当前页", name = "current", dataType = DataType.LONG, paramType = ParamType.QUERY),
-        @ApiImplicitParam(value = "页面大小", name = "size", dataType = DataType.LONG, paramType = ParamType.QUERY)
-    })
-	public ResponseEntity<IPage<User>> page(@Valid PageQuery query) {
-		return ResponseEntity.data(userService.getUserPage(query));
-	}
-
-	/**
-	* 新增分享
-	*/
-	@PostMapping
-    @ApiOperationSupport(order = 3)
-	@ApiOperation(value = "新增分享", notes = "传入user")
-	public ResponseEntity save(@Valid @RequestBody User user) {
-        userService.saveUser(user);
-	    return ResponseEntity.success("新增成功");
-	}
-
-	/**
-	* 修改分享
-	*/
-	@PutMapping
-    @ApiOperationSupport(order = 4)
-	@ApiOperation(value = "修改分享", notes = "传入user")
-	public ResponseEntity update(@Valid @RequestBody User user) {
-        userService.updateUserById(user);
-        return ResponseEntity.success("修改成功");
-	}
-
-	/**
-	* 删除分享
-	*/
-	@DeleteMapping("/{id}")
-    @ApiOperationSupport(order = 5)
-	@ApiOperation(value = "删除分享", notes = "传入主键id")
-	public ResponseEntity remove(@PathVariable("id") String id) {
-        userService.removeUserById(Long.valueOf(id));
-        return ResponseEntity.success("删除成功");
+	@PutMapping("/add-bonus")
+	public User addBonus(@RequestBody UserAddBonseDTO userAddBonseDTO) {
+		Integer userId = userAddBonseDTO.getUserId();
+		userService.addBonus(
+			UserAddBonusMsgDTO.builder()
+				.userId(userId)
+				.bonus(userAddBonseDTO.getBonus())
+				.description("兑换分享...")
+				.event("BUY")
+				.build()
+		);
+		return this.userService.getById(userId);
 	}
 
 }

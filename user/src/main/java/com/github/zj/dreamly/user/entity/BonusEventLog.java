@@ -13,17 +13,17 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 分享实体类
+ * 积分变更记录表实体类
  *
  * @author 苍海之南
- * @since 2019-12-10
+ * @since 2019-12-11
  */
 @Data
 @Builder
-@ApiModel(value = "User对象", description = "分享")
+@ApiModel(value = "BonusEventLog对象", description = "积分变更记录表")
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements Serializable {
+public class BonusEventLog implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -34,39 +34,29 @@ public class User implements Serializable {
 	@TableId(value = "id", type = IdType.AUTO)
 	private Integer id;
 	/**
-	 * 微信id
+	 * user.id
 	 */
-	@ApiModelProperty(value = "微信id")
-	private String wxId;
+	@ApiModelProperty(value = "user.id")
+	private Integer userId;
 	/**
-	 * 微信昵称
+	 * 积分操作值
 	 */
-	@ApiModelProperty(value = "微信昵称")
-	private String wxNickname;
+	@ApiModelProperty(value = "积分操作值")
+	private Integer value;
 	/**
-	 * 角色
+	 * 发生的事件
 	 */
-	@ApiModelProperty(value = "角色")
-	private String roles;
-	/**
-	 * 头像地址
-	 */
-	@ApiModelProperty(value = "头像地址")
-	private String avatarUrl;
+	@ApiModelProperty(value = "发生的事件")
+	private String event;
 	/**
 	 * 创建时间
 	 */
 	@ApiModelProperty(value = "创建时间")
 	private Date createTime;
 	/**
-	 * 修改时间
+	 * 描述
 	 */
-	@ApiModelProperty(value = "修改时间")
-	private Date updateTime;
-	/**
-	 * 积分
-	 */
-	@ApiModelProperty(value = "积分")
-	private Integer bonus;
+	@ApiModelProperty(value = "描述")
+	private String description;
 
 }
