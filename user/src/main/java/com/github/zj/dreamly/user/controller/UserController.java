@@ -3,11 +3,12 @@ package com.github.zj.dreamly.user.controller;
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.hutool.core.bean.BeanUtil;
-import com.zj.dreamly.common.dto.messaging.UserAddBonusMsgDTO;
-import com.zj.dreamly.common.dto.user.*;
 import com.github.zj.dreamly.user.entity.User;
 import com.github.zj.dreamly.user.service.UserService;
 import com.zj.dreamly.common.auth.CheckLogin;
+import com.zj.dreamly.common.dto.messaging.UserAddBonusMsgDTO;
+import com.zj.dreamly.common.dto.share.ShareResponseDTO;
+import com.zj.dreamly.common.dto.user.*;
 import com.zj.dreamly.common.util.JwtOperator;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -108,17 +110,28 @@ public class UserController {
 
 	/**
 	 * 根据用户名获取用户信息
+	 *
 	 * @param id userId
 	 * @return {@link UserDTO}
 	 */
 	@GetMapping("/{id}")
-	UserDTO findUserById(@PathVariable("id") Integer id){
+	public UserDTO findUserById(@PathVariable("id") Integer id) {
 
 		final User user = userService.getById(id);
 
 		UserDTO userDTO = new UserDTO();
 		BeanUtil.copyProperties(user, userDTO);
 		return userDTO;
+	}
+
+	/**
+	 * 我的投稿
+	 */
+	@GetMapping("/contributions")
+	@CheckLogin
+	public List<ShareResponseDTO> contributions(HttpServletRequest request) {
+		final Integer id = Integer.valueOf(request.getAttribute("id").toString());
+		return userService.contributions(id);
 	}
 
 }

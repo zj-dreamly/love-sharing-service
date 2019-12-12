@@ -15,6 +15,7 @@ import com.github.zj.dreamly.content.mapper.ShareMapper;
 import com.github.zj.dreamly.content.service.MidUserShareService;
 import com.github.zj.dreamly.content.service.ShareService;
 import com.github.zj.dreamly.content.util.PageInfo;
+import com.github.zj.dreamly.tool.util.StreamUtil;
 import com.zj.dreamly.common.dto.share.ShareRequestDTO;
 import com.zj.dreamly.common.dto.user.UserAddBonseDTO;
 import com.zj.dreamly.common.dto.user.UserDTO;
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,9 +68,7 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share> implements
 		// 1. 如果用户未登录，那么downloadUrl全部设为null
 		if (userId == null) {
 			sharesDeal = shares.stream()
-				.peek(share -> {
-					share.setDownloadUrl(null);
-				})
+				.peek(share -> share.setDownloadUrl(null))
 				.collect(Collectors.toList());
 		}
 		// 2. 如果用户登录了，那么查询一下mid_user_share，如果没有数据，那么这条share的downloadUrl也设为null
@@ -172,5 +172,46 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share> implements
 			.build();
 		this.save(share);
 		return share;
+	}
+
+	@Override
+	public List<Share> listByUserId(Integer id) {
+		return this.list(Wrappers.<Share>lambdaQuery().eq(Share::getUserId, id));
+	}
+
+	@Override
+	public Share updateContribute(Integer id, ShareRequestDTO shareRequestDTO) {
+
+		if (StrUtil.hasBlank(shareRequestDTO.getAuthor(),
+			shareRequestDTO.getDownloadUrl(), shareRequestDTO.getPrice(),
+			shareRequestDTO.getSummary(), shareRequestDTO.getTitle())) {
+
+			throw new RuntimeException("请完善投稿内容");
+
+		}
+		final Share share = this.getById(id);
+		if (null == share){
+			throw new RuntimeException("此分享信息不存在");
+		}
+
+		share.setAuthor(shareRequestDTO.getAuthor());
+		share.setDownloadUrl(shareRequestDTO.getDownloadUrl());
+		share.setIsOriginal(shareRequestDTO.isOriginal());
+		share.setPrice(Integer.valueOf(shareRequestDTO.getPrice()));
+		share.setSummary(shareRequestDTO.getSummary());
+		share.setTitle(shareRequestDTO.getTitle());
+
+		this.updateById(share);
+		return share;
+	}
+
+	@Override
+	public Collection<Share> user(Integer userId) {
+
+		final List<MidUserShare> list = midUserShareService
+			.list(Wrappers.<MidUserShare>lambdaQuery().eq(MidUserShare::getUserId, userId));
+
+		List<Integer> shareIds = StreamUtil.map(list, MidUserShare::getShareId);
+		return this.listByIds(shareIds);
 	}
 }

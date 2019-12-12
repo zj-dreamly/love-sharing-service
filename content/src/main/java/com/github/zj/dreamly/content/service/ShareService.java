@@ -3,11 +3,13 @@ package com.github.zj.dreamly.content.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.zj.dreamly.content.content.ShareAuditDTO;
 import com.github.zj.dreamly.content.content.ShareDTO;
-import com.zj.dreamly.common.dto.share.ShareRequestDTO;
 import com.github.zj.dreamly.content.entity.Share;
 import com.github.zj.dreamly.content.util.PageInfo;
+import com.zj.dreamly.common.dto.share.ShareRequestDTO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 分享表 服务类
@@ -57,9 +59,34 @@ public interface ShareService extends IService<Share> {
 	/**
 	 * 投稿接口
 	 *
-	 * @param userId 当前用户id
+	 * @param userId          当前用户id
 	 * @param shareRequestDTO {@link ShareRequestDTO}
 	 * @return {@link Share}
 	 */
 	Share contribute(Integer userId, ShareRequestDTO shareRequestDTO);
+
+	/**
+	 * 根据分享人的id查看此用户的投稿
+	 *
+	 * @param id 投稿人id
+	 * @return {@link Share}
+	 */
+	List<Share> listByUserId(Integer id);
+
+	/**
+	 * 修改投稿
+	 *
+	 *
+	 * @param id 投稿id
+	 * @param shareRequestDTO {@link ShareRequestDTO}
+	 * @return {@link Share}
+	 */
+	Share updateContribute(Integer id, ShareRequestDTO shareRequestDTO);
+
+	/**
+	 * 我的兑换
+	 * @param userId 用户id
+	 * @return {@link Share}
+	 */
+	Collection<Share> user(Integer userId);
 }

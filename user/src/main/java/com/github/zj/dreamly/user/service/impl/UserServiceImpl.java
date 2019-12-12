@@ -2,13 +2,15 @@ package com.github.zj.dreamly.user.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zj.dreamly.common.dto.messaging.UserAddBonusMsgDTO;
-import com.zj.dreamly.common.dto.user.UserLoginDTO;
 import com.github.zj.dreamly.user.entity.BonusEventLog;
 import com.github.zj.dreamly.user.entity.User;
+import com.github.zj.dreamly.user.feignclient.ContentCenterFeignClient;
 import com.github.zj.dreamly.user.mapper.BonusEventLogMapper;
 import com.github.zj.dreamly.user.mapper.UserMapper;
 import com.github.zj.dreamly.user.service.UserService;
+import com.zj.dreamly.common.dto.messaging.UserAddBonusMsgDTO;
+import com.zj.dreamly.common.dto.share.ShareResponseDTO;
+import com.zj.dreamly.common.dto.user.UserLoginDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 分享 服务实现类
@@ -32,13 +35,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
 	private final BonusEventLogMapper bonusEventLogMapper;
 
+	private final ContentCenterFeignClient contentCenterFeignClient;
+
 	private static final int DEFAULT_BONUS = 300;
 
 	private static final String DEFAULT_ROLE = "user";
-
-	public User findById(Integer id) {
-		return this.getById(id);
-	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -62,6 +63,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 				.build()
 		);
 		log.info("积分添加/减少完成");
+	}
+
+	@Override
+	public List<ShareResponseDTO> contributions(Integer id) {
+		return contentCenterFeignClient.listByUserId(id);
 	}
 
 	@Override

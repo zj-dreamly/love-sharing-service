@@ -24,3 +24,6 @@ management:
   endpoint:
     health:
       show-details: always
+feign:
+  hystrix:
+    enabled: true
