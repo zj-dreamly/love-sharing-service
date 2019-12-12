@@ -1,5 +1,6 @@
 package com.zj.dreamly.common.auth;
 
+import com.zj.dreamly.common.constant.SystemConstant;
 import com.zj.dreamly.common.util.JwtOperator;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class AuthAspect {
 			// 1. 从header里面获取token
 			HttpServletRequest request = getHttpServletRequest();
 
-			String token = request.getHeader("X-Token");
+			String token = request.getHeader(SystemConstant.TOKEN_HEADER);
 
 			// 2. 校验token是否合法&是否过期；如果不合法或已过期直接抛异常；如果合法放行
 			Boolean isValid = jwtOperator.validateToken(token);

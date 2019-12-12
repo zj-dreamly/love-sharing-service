@@ -3,9 +3,11 @@ package com.github.zj.dreamly.user.controller;
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.hutool.core.bean.BeanUtil;
+import com.github.zj.dreamly.user.entity.BonusEventLog;
 import com.github.zj.dreamly.user.entity.User;
 import com.github.zj.dreamly.user.service.UserService;
 import com.zj.dreamly.common.auth.CheckLogin;
+import com.zj.dreamly.common.constant.SystemConstant;
 import com.zj.dreamly.common.dto.messaging.UserAddBonusMsgDTO;
 import com.zj.dreamly.common.dto.share.ShareResponseDTO;
 import com.zj.dreamly.common.dto.user.*;
@@ -99,6 +101,13 @@ public class UserController {
 				.build()
 		);
 		return this.userService.getById(userId);
+	}
+
+	@GetMapping("/bonus-logs")
+	@CheckLogin
+	public List<BonusEventLog> addBonus(@RequestHeader(value = SystemConstant.TOKEN_HEADER, required = false) String token) {
+		Integer userId = jwtOperator.getUserId(token);
+		return this.userService.bonusLogs(userId);
 	}
 
 	@GetMapping("/me")

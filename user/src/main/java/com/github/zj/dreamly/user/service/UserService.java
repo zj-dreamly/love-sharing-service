@@ -1,6 +1,7 @@
 package com.github.zj.dreamly.user.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.zj.dreamly.user.entity.BonusEventLog;
 import com.github.zj.dreamly.user.entity.User;
 import com.zj.dreamly.common.dto.messaging.UserAddBonusMsgDTO;
 import com.zj.dreamly.common.dto.share.ShareResponseDTO;
@@ -38,4 +39,11 @@ public interface UserService extends IService<User> {
 	 * @return {@link ShareResponseDTO}
 	 */
 	List<ShareResponseDTO> contributions(Integer id);
+
+	/**
+	 * 获取用户积分变化情况
+	 * @param userId 用户id
+	 * @return {@link BonusEventLog}
+	 */
+	List<BonusEventLog> bonusLogs(Integer userId);
 }

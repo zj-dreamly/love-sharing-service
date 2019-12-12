@@ -5,6 +5,7 @@ import com.github.zj.dreamly.content.entity.Share;
 import com.github.zj.dreamly.content.service.ShareService;
 import com.github.zj.dreamly.content.util.PageInfo;
 import com.zj.dreamly.common.auth.CheckLogin;
+import com.zj.dreamly.common.constant.SystemConstant;
 import com.zj.dreamly.common.dto.share.ShareRequestDTO;
 import com.zj.dreamly.common.util.JwtOperator;
 import io.swagger.annotations.Api;
@@ -54,7 +55,7 @@ public class ShareController {
 		@RequestParam(required = false) String title,
 		@RequestParam(required = false, defaultValue = "1") Integer pageNo,
 		@RequestParam(required = false, defaultValue = "10") Integer pageSize,
-		@RequestHeader(value = "X-Token", required = false) String token) {
+		@RequestHeader(value = SystemConstant.TOKEN_HEADER, required = false) String token) {
 
 		Integer userId = jwtOperator.getUserId(token);
 		return this.shareService.q(title, pageNo, pageSize, userId);
@@ -68,7 +69,7 @@ public class ShareController {
 
 	@PostMapping("/contribute")
 	@CheckLogin
-	public Share contribute(@RequestHeader(value = "X-Token", required = false) String token,
+	public Share contribute(@RequestHeader(value = SystemConstant.TOKEN_HEADER, required = false) String token,
 							@RequestBody ShareRequestDTO shareRequestDTO) {
 
 		Integer userId = jwtOperator.getUserId(token);
@@ -87,7 +88,7 @@ public class ShareController {
 	 */
 	@GetMapping("/user")
 	@CheckLogin
-	public Collection<Share> user(@RequestHeader(value = "X-Token", required = false) String token) {
+	public Collection<Share> user(@RequestHeader(value = SystemConstant.TOKEN_HEADER, required = false) String token) {
 		Integer userId = jwtOperator.getUserId(token);
 		return this.shareService.user(userId);
 	}

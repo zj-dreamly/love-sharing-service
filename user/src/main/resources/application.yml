@@ -16,6 +16,9 @@ spring:
         server-addr: localhost:8848
       config:
         server-addr: localhost:8848
+  jackson:
+    date-format: yyyy-MM-dd
+    time-zone: GMT+8
 management:
   endpoints:
     web:

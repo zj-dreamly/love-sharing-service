@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.zj.dreamly.user.entity.BonusEventLog;
 import com.github.zj.dreamly.user.entity.User;
 import com.github.zj.dreamly.user.feignclient.ContentCenterFeignClient;
-import com.github.zj.dreamly.user.mapper.BonusEventLogMapper;
 import com.github.zj.dreamly.user.mapper.UserMapper;
+import com.github.zj.dreamly.user.service.BonusEventLogService;
 import com.github.zj.dreamly.user.service.UserService;
 import com.zj.dreamly.common.dto.messaging.UserAddBonusMsgDTO;
 import com.zj.dreamly.common.dto.share.ShareResponseDTO;
@@ -33,7 +33,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
 	private final UserMapper userMapper;
 
-	private final BonusEventLogMapper bonusEventLogMapper;
+	private final BonusEventLogService bonusEventLogService;
 
 	private final ContentCenterFeignClient contentCenterFeignClient;
 
@@ -53,7 +53,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 		this.userMapper.updateById(user);
 
 		// 2. 记录日志到bonus_event_log表里面
-		this.bonusEventLogMapper.insert(
+		this.bonusEventLogService.save(
 			BonusEventLog.builder()
 				.userId(userId)
 				.value(bonus)
@@ -68,6 +68,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 	@Override
 	public List<ShareResponseDTO> contributions(Integer id) {
 		return contentCenterFeignClient.listByUserId(id);
+	}
+
+	@Override
+	public List<BonusEventLog> bonusLogs(Integer userId) {
+		return bonusEventLogService.list(Wrappers.<BonusEventLog>lambdaQuery()
+			.eq(BonusEventLog::getUserId, userId));
 	}
 
 	@Override
