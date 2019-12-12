@@ -2,6 +2,7 @@ package com.github.zj.dreamly.user.controller;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
+import cn.hutool.core.bean.BeanUtil;
 import com.zj.dreamly.common.dto.messaging.UserAddBonusMsgDTO;
 import com.zj.dreamly.common.dto.user.*;
 import com.github.zj.dreamly.user.entity.User;
@@ -103,6 +104,21 @@ public class UserController {
 	public User me(HttpServletRequest request) {
 		final Integer id = Integer.valueOf(request.getAttribute("id").toString());
 		return userService.getById(id);
+	}
+
+	/**
+	 * 根据用户名获取用户信息
+	 * @param id userId
+	 * @return {@link UserDTO}
+	 */
+	@GetMapping("/{id}")
+	UserDTO findUserById(@PathVariable("id") Integer id){
+
+		final User user = userService.getById(id);
+
+		UserDTO userDTO = new UserDTO();
+		BeanUtil.copyProperties(user, userDTO);
+		return userDTO;
 	}
 
 }

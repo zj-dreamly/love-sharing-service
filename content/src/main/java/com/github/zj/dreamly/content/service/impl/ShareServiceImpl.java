@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.zj.dreamly.content.content.ShareAuditDTO;
 import com.github.zj.dreamly.content.content.ShareDTO;
+import com.github.zj.dreamly.content.feignclient.UserCenterFeignClient;
 import com.zj.dreamly.common.dto.share.ShareRequestDTO;
 import com.github.zj.dreamly.content.entity.MidUserShare;
 import com.github.zj.dreamly.content.entity.Share;
@@ -15,6 +16,7 @@ import com.github.zj.dreamly.content.mapper.ShareMapper;
 import com.github.zj.dreamly.content.service.MidUserShareService;
 import com.github.zj.dreamly.content.service.ShareService;
 import com.github.zj.dreamly.content.util.PageInfo;
+import com.zj.dreamly.common.dto.user.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,8 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share> implements
 
 	private final MidUserShareService midUserShareService;
 
+	private final UserCenterFeignClient userCenterFeignClient;
+
 	@Override
 	public ShareDTO getByShareId(Integer id) {
 
@@ -44,6 +48,9 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share> implements
 		ShareDTO shareDTO = new ShareDTO();
 
 		BeanUtil.copyProperties(share, shareDTO);
+
+		final UserDTO userDTO = userCenterFeignClient.findUserById(share.getUserId());
+		shareDTO.setWxNickname(userDTO.getWxNickname());
 		return shareDTO;
 	}
 
