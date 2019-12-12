@@ -1,4 +1,4 @@
-package com.github.zj.dreamly.user.dto.user;
+package com.zj.dreamly.common.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,14 +12,19 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginRespDTO {
+public class UserLoginDTO {
     /**
-     * token
+     * code
      */
-    private JwtTokenRespDTO token;
+    private String code;
 
     /**
-     * 用户信息
+     * 头像地址
      */
-    private UserRespDTO user;
+    private String avatarUrl;
+
+    /**
+     * 微信昵称
+     */
+    private String wxNickname;
 }

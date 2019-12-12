@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.zj.dreamly.content.content.ShareAuditDTO;
 import com.github.zj.dreamly.content.content.ShareDTO;
-import com.github.zj.dreamly.content.dto.share.ShareRequestDTO;
+import com.zj.dreamly.common.dto.share.ShareRequestDTO;
 import com.github.zj.dreamly.content.entity.MidUserShare;
 import com.github.zj.dreamly.content.entity.Share;
 import com.github.zj.dreamly.content.mapper.ShareMapper;

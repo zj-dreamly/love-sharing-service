@@ -1,4 +1,4 @@
-package com.github.zj.dreamly.content.dto.share;
+package com.zj.dreamly.common.dto.share;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

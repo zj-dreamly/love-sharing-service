@@ -2,8 +2,8 @@ package com.github.zj.dreamly.user.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.github.zj.dreamly.user.dto.messaging.UserAddBonusMsgDTO;
-import com.github.zj.dreamly.user.dto.user.UserLoginDTO;
+import com.zj.dreamly.common.dto.messaging.UserAddBonusMsgDTO;
+import com.zj.dreamly.common.dto.user.UserLoginDTO;
 import com.github.zj.dreamly.user.entity.BonusEventLog;
 import com.github.zj.dreamly.user.entity.User;
 import com.github.zj.dreamly.user.mapper.BonusEventLogMapper;

@@ -1,4 +1,4 @@
-package com.github.zj.dreamly.user.dto.messaging;
+package com.zj.dreamly.common.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,17 +12,21 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserAddBonusMsgDTO {
+public class UserRespDTO {
 	/**
-	 * 为谁加积分
+	 * id
 	 */
-	private Integer userId;
+	private Integer id;
 	/**
-	 * 加多少积分
+	 * 头像地址
+	 */
+	private String avatarUrl;
+	/**
+	 * 积分
 	 */
 	private Integer bonus;
-
-	private String description;
-
-	private String event;
+	/**
+	 * 微信昵称
+	 */
+	private String wxNickname;
 }

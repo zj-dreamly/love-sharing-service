@@ -2,8 +2,8 @@ package com.github.zj.dreamly.user.controller;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
-import com.github.zj.dreamly.user.dto.messaging.UserAddBonusMsgDTO;
-import com.github.zj.dreamly.user.dto.user.*;
+import com.zj.dreamly.common.dto.messaging.UserAddBonusMsgDTO;
+import com.zj.dreamly.common.dto.user.*;
 import com.github.zj.dreamly.user.entity.User;
 import com.github.zj.dreamly.user.service.UserService;
 import com.zj.dreamly.common.auth.CheckLogin;

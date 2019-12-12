@@ -1,8 +1,8 @@
 package com.github.zj.dreamly.user.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.github.zj.dreamly.user.dto.messaging.UserAddBonusMsgDTO;
-import com.github.zj.dreamly.user.dto.user.UserLoginDTO;
+import com.zj.dreamly.common.dto.messaging.UserAddBonusMsgDTO;
+import com.zj.dreamly.common.dto.user.UserLoginDTO;
 import com.github.zj.dreamly.user.entity.User;
 
 /**
@@ -16,7 +16,7 @@ public interface UserService extends IService<User> {
 	/**
 	 * 小程序登录方法
 	 *
-	 * @param loginDTO {@link com.github.zj.dreamly.user.dto.user.LoginRespDTO}
+	 * @param loginDTO {@link com.zj.dreamly.common.dto.user.LoginRespDTO}
 	 * @param openid   微信在小程序的唯一标识
 	 * @return 登录用户
 	 */

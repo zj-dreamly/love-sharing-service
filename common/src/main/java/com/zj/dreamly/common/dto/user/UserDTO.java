@@ -1,4 +1,4 @@
-package com.github.zj.dreamly.content.dto.user;
+package com.zj.dreamly.common.dto.user;
 
 import lombok.Data;
 

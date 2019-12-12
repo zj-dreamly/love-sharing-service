@@ -3,7 +3,7 @@ package com.github.zj.dreamly.content.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.zj.dreamly.content.content.ShareAuditDTO;
 import com.github.zj.dreamly.content.content.ShareDTO;
-import com.github.zj.dreamly.content.dto.share.ShareRequestDTO;
+import com.zj.dreamly.common.dto.share.ShareRequestDTO;
 import com.github.zj.dreamly.content.entity.Share;
 import com.github.zj.dreamly.content.util.PageInfo;
 
