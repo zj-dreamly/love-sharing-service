@@ -1,6 +1,6 @@
 package com.github.zj.dreamly.content.content;
 
-import com.github.zj.dreamly.content.enums.AuditStatusEnum;
+import com.zj.dreamly.common.enums.AuditStatusEnum;
 import lombok.Data;
 
 @Data

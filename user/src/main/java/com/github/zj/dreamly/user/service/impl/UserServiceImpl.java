@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -45,7 +46,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
 	private static final int DEFAULT_BONUS = 300;
 
-	@Value("${default-sign-bonus:300}")
+	@Value("${default-sign-bonus:20}")
 	private int defaultSignBonus;
 
 	private static final String DEFAULT_ROLE = "user";
@@ -86,11 +87,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
 	public User sign(Integer id) {
 
 		Date date = new Date();
 		final List<BonusEventLog> list = bonusEventLogService.list(Wrappers.<BonusEventLog>lambdaQuery()
 			.eq(BonusEventLog::getUserId, id)
+			.eq(BonusEventLog::getEvent, BonusEventEnum.SIGN.value)
 			.between(BonusEventLog::getCreateTime, DateUtil.beginOfDay(date),
 				DateUtil.endOfDay(date)));
 
@@ -98,6 +101,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 			throw new RuntimeException("今日已签到，请明天再来签到哦");
 		}
 
+		final User user = this.getById(id);
+		user.setBonus(user.getBonus() + defaultSignBonus);
+		this.updateById(user);
+
+		//记录签到日志
 		this.bonusEventLogService.save(
 			BonusEventLog.builder()
 				.userId(id)
@@ -107,7 +115,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 				.description(BonusEventEnum.SIGN.desc)
 				.build()
 		);
-		return null;
+
+		return user;
 	}
 
 	@Override

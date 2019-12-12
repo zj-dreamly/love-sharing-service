@@ -19,6 +19,7 @@ import com.github.zj.dreamly.tool.util.StreamUtil;
 import com.zj.dreamly.common.dto.share.ShareRequestDTO;
 import com.zj.dreamly.common.dto.user.UserAddBonseDTO;
 import com.zj.dreamly.common.dto.user.UserDTO;
+import com.zj.dreamly.common.enums.AuditStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -164,6 +165,7 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share> implements
 			.title(shareRequestDTO.getTitle())
 			.createTime(date)
 			.updateTime(date)
+			.auditStatus(AuditStatusEnum.NOT_YET.name())
 			.isOriginal(shareRequestDTO.isOriginal())
 			.author(shareRequestDTO.getAuthor())
 			.downloadUrl(shareRequestDTO.getDownloadUrl())
@@ -190,7 +192,7 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share> implements
 
 		}
 		final Share share = this.getById(id);
-		if (null == share){
+		if (null == share) {
 			throw new RuntimeException("此分享信息不存在");
 		}
 
