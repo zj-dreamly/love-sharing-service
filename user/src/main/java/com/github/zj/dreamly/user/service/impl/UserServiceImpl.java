@@ -1,5 +1,7 @@
 package com.github.zj.dreamly.user.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.zj.dreamly.user.entity.BonusEventLog;
@@ -11,9 +13,12 @@ import com.github.zj.dreamly.user.service.UserService;
 import com.zj.dreamly.common.dto.messaging.UserAddBonusMsgDTO;
 import com.zj.dreamly.common.dto.share.ShareResponseDTO;
 import com.zj.dreamly.common.dto.user.UserLoginDTO;
+import com.zj.dreamly.common.enums.BonusEventEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +34,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RefreshScope
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
 	private final UserMapper userMapper;
@@ -38,6 +44,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 	private final ContentCenterFeignClient contentCenterFeignClient;
 
 	private static final int DEFAULT_BONUS = 300;
+
+	@Value("${default-sign-bonus:300}")
+	private int defaultSignBonus;
 
 	private static final String DEFAULT_ROLE = "user";
 
@@ -74,6 +83,31 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 	public List<BonusEventLog> bonusLogs(Integer userId) {
 		return bonusEventLogService.list(Wrappers.<BonusEventLog>lambdaQuery()
 			.eq(BonusEventLog::getUserId, userId));
+	}
+
+	@Override
+	public User sign(Integer id) {
+
+		Date date = new Date();
+		final List<BonusEventLog> list = bonusEventLogService.list(Wrappers.<BonusEventLog>lambdaQuery()
+			.eq(BonusEventLog::getUserId, id)
+			.between(BonusEventLog::getCreateTime, DateUtil.beginOfDay(date),
+				DateUtil.endOfDay(date)));
+
+		if (CollectionUtil.isNotEmpty(list)) {
+			throw new RuntimeException("今日已签到，请明天再来签到哦");
+		}
+
+		this.bonusEventLogService.save(
+			BonusEventLog.builder()
+				.userId(id)
+				.value(defaultSignBonus)
+				.event(BonusEventEnum.SIGN.value)
+				.createTime(date)
+				.description(BonusEventEnum.SIGN.desc)
+				.build()
+		);
+		return null;
 	}
 
 	@Override

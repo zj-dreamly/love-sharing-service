@@ -46,4 +46,11 @@ public interface UserService extends IService<User> {
 	 * @return {@link BonusEventLog}
 	 */
 	List<BonusEventLog> bonusLogs(Integer userId);
+
+	/**
+	 * 签到接口
+	 * @param id 用户id
+	 * @return {@link User}
+	 */
+	User sign(Integer id);
 }

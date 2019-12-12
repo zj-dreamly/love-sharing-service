@@ -11,6 +11,7 @@ import com.zj.dreamly.common.constant.SystemConstant;
 import com.zj.dreamly.common.dto.messaging.UserAddBonusMsgDTO;
 import com.zj.dreamly.common.dto.share.ShareResponseDTO;
 import com.zj.dreamly.common.dto.user.*;
+import com.zj.dreamly.common.enums.BonusEventEnum;
 import com.zj.dreamly.common.util.JwtOperator;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
@@ -96,8 +97,8 @@ public class UserController {
 			UserAddBonusMsgDTO.builder()
 				.userId(userId)
 				.bonus(userAddBonseDTO.getBonus())
-				.description("兑换分享")
-				.event("BUY")
+				.description(BonusEventEnum.BUY.desc)
+				.event(BonusEventEnum.BUY.value)
 				.build()
 		);
 		return this.userService.getById(userId);
@@ -141,6 +142,16 @@ public class UserController {
 	public List<ShareResponseDTO> contributions(HttpServletRequest request) {
 		final Integer id = Integer.valueOf(request.getAttribute("id").toString());
 		return userService.contributions(id);
+	}
+
+	/**
+	 * 我的签到
+	 */
+	@GetMapping("/sign")
+	@CheckLogin
+	public User sign(HttpServletRequest request) {
+		final Integer id = Integer.valueOf(request.getAttribute("id").toString());
+		return userService.sign(id);
 	}
 
 }
