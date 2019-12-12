@@ -8,14 +8,15 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.zj.dreamly.content.content.ShareAuditDTO;
 import com.github.zj.dreamly.content.content.ShareDTO;
-import com.github.zj.dreamly.content.feignclient.UserCenterFeignClient;
-import com.zj.dreamly.common.dto.share.ShareRequestDTO;
 import com.github.zj.dreamly.content.entity.MidUserShare;
 import com.github.zj.dreamly.content.entity.Share;
+import com.github.zj.dreamly.content.feignclient.UserCenterFeignClient;
 import com.github.zj.dreamly.content.mapper.ShareMapper;
 import com.github.zj.dreamly.content.service.MidUserShareService;
 import com.github.zj.dreamly.content.service.ShareService;
 import com.github.zj.dreamly.content.util.PageInfo;
+import com.zj.dreamly.common.dto.share.ShareRequestDTO;
+import com.zj.dreamly.common.dto.user.UserAddBonseDTO;
 import com.zj.dreamly.common.dto.user.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -93,12 +94,52 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share> implements
 
 	@Override
 	public Share exchangeById(Integer id, HttpServletRequest request) {
-		return null;
+		Object userId = request.getAttribute("id");
+		Integer integerUserId = (Integer) userId;
+
+		// 1. 根据id查询share，校验是否存在
+		Share share = this.getById(id);
+		if (share == null) {
+			throw new IllegalArgumentException("该分享不存在！");
+		}
+		Integer price = share.getPrice();
+
+		// 2. 如果当前用户已经兑换过该分享，则直接返回
+		MidUserShare midUserShare = this.midUserShareService.getOne(
+			Wrappers.query(
+				MidUserShare.builder()
+					.shareId(id)
+					.userId(integerUserId)
+					.build())
+		);
+		if (midUserShare != null) {
+			return share;
+		}
+
+		// 3. 根据当前登录的用户id，查询积分是否够
+		UserDTO userDTO = this.userCenterFeignClient.findUserById(integerUserId);
+		if (price > userDTO.getBonus()) {
+			throw new IllegalArgumentException("用户积分不够用！");
+		}
+
+		// 4. 扣减积分 & 往mid_user_share里插入一条数据
+		this.userCenterFeignClient.addBonus(
+			UserAddBonseDTO.builder()
+				.userId(integerUserId)
+				.bonus(0 - price)
+				.build()
+		);
+		this.midUserShareService.save(
+			MidUserShare.builder()
+				.userId(integerUserId)
+				.shareId(id)
+				.build()
+		);
+		return share;
 	}
 
 	@Override
 	public Share auditById(Integer id, ShareAuditDTO auditDTO) {
-
 		return null;
 	}
 

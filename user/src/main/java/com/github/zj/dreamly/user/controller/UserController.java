@@ -92,7 +92,7 @@ public class UserController {
 			UserAddBonusMsgDTO.builder()
 				.userId(userId)
 				.bonus(userAddBonseDTO.getBonus())
-				.description("兑换分享...")
+				.description("兑换分享")
 				.event("BUY")
 				.build()
 		);

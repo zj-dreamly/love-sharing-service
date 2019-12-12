@@ -1,9 +1,9 @@
 package com.github.zj.dreamly.user.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.zj.dreamly.user.entity.User;
 import com.zj.dreamly.common.dto.messaging.UserAddBonusMsgDTO;
 import com.zj.dreamly.common.dto.user.UserLoginDTO;
-import com.github.zj.dreamly.user.entity.User;
 
 /**
  * 分享 服务类
@@ -23,8 +23,9 @@ public interface UserService extends IService<User> {
 	User login(UserLoginDTO loginDTO, String openid);
 
 	/**
-	 *  给用户添加几分
+	 * 给用户添加几分
+	 *
 	 * @param msgDTO {@link UserAddBonusMsgDTO}
 	 */
-	public void addBonus(UserAddBonusMsgDTO msgDTO);
+	void addBonus(UserAddBonusMsgDTO msgDTO);
 }

@@ -61,7 +61,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 				.description(msgDTO.getDescription())
 				.build()
 		);
-		log.info("积分添加完毕...");
+		log.info("积分添加/减少完成");
 	}
 
 	@Override
