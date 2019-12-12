@@ -30,13 +30,15 @@ public interface ShareService extends IService<Share> {
 	/**
 	 * 分页列表
 	 *
+	 *
+	 * @param type 类型
 	 * @param title    标题
 	 * @param pageNo   页数
 	 * @param pageSize 页面大小
 	 * @param userId   用户id
 	 * @return {@link PageInfo}
 	 */
-	PageInfo<Share> q(String title, Integer pageNo, Integer pageSize, Integer userId);
+	PageInfo<Share> q(String type, String title, Integer pageNo, Integer pageSize, Integer userId);
 
 	/**
 	 * 分享兑换

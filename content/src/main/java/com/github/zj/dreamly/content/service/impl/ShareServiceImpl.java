@@ -2,6 +2,7 @@ package com.github.zj.dreamly.content.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -59,10 +60,18 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share> implements
 	}
 
 	@Override
-	public PageInfo<Share> q(String title, Integer pageNo, Integer pageSize, Integer userId) {
+	public PageInfo<Share> q(String type, String title, Integer pageNo, Integer pageSize, Integer userId) {
 
-		final IPage<Share> page = this.page(new Page<>(pageNo, pageSize),
-			Wrappers.<Share>lambdaQuery().like(Share::getTitle, title));
+		//TODO 这里实现权限的判断
+		final LambdaQueryWrapper<Share> wrapper = Wrappers.<Share>lambdaQuery()
+			.like(Share::getTitle, title);
+
+		if (AuditStatusEnum.NOT_YET.name().equals(type)){
+			wrapper.eq(Share::getAuditStatus, AuditStatusEnum.NOT_YET.name());
+		}else {
+			wrapper.ne(Share::getAuditStatus, AuditStatusEnum.NOT_YET.name());
+		}
+		final IPage<Share> page = this.page(new Page<>(pageNo, pageSize), wrapper);
 
 		final List<Share> shares = page.getRecords();
 		List<Share> sharesDeal;
