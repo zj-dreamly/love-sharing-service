@@ -12,4 +12,12 @@ public interface SystemConstant {
 	 * token header
 	 */
 	String TOKEN_HEADER = "X-Token";
+	/**
+	 * 管理员权限
+	 */
+	String ROLE_ADMIN = "admin";
+	/**
+	 * 普通用户权限
+	 */
+	String ROLE_USER = "user";
 }

@@ -17,6 +17,7 @@ import com.github.zj.dreamly.content.service.MidUserShareService;
 import com.github.zj.dreamly.content.service.ShareService;
 import com.github.zj.dreamly.content.util.PageInfo;
 import com.github.zj.dreamly.tool.util.StreamUtil;
+import com.zj.dreamly.common.constant.SystemConstant;
 import com.zj.dreamly.common.dto.share.ShareRequestDTO;
 import com.zj.dreamly.common.dto.user.UserAddBonseDTO;
 import com.zj.dreamly.common.dto.user.UserDTO;
@@ -62,42 +63,36 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share> implements
 	@Override
 	public PageInfo<Share> q(String type, String title, Integer pageNo, Integer pageSize, Integer userId) {
 
-		//TODO 这里实现权限的判断
+		final UserDTO user = userCenterFeignClient.findUserById(userId);
+
 		final LambdaQueryWrapper<Share> wrapper = Wrappers.<Share>lambdaQuery()
 			.like(Share::getTitle, title);
 
-		if (AuditStatusEnum.NOT_YET.name().equals(type)){
+		if (AuditStatusEnum.NOT_YET.name().equals(type) &&
+		user.getRoles().equals(SystemConstant.ROLE_ADMIN)) {
 			wrapper.eq(Share::getAuditStatus, AuditStatusEnum.NOT_YET.name());
-		}else {
-			wrapper.ne(Share::getAuditStatus, AuditStatusEnum.NOT_YET.name());
+		} else {
+			wrapper.eq(Share::getAuditStatus, AuditStatusEnum.PASS.name());
 		}
 		final IPage<Share> page = this.page(new Page<>(pageNo, pageSize), wrapper);
 
 		final List<Share> shares = page.getRecords();
 		List<Share> sharesDeal;
-		// 1. 如果用户未登录，那么downloadUrl全部设为null
-		if (userId == null) {
-			sharesDeal = shares.stream()
-				.peek(share -> share.setDownloadUrl(null))
-				.collect(Collectors.toList());
-		}
-		// 2. 如果用户登录了，那么查询一下mid_user_share，如果没有数据，那么这条share的downloadUrl也设为null
-		else {
-			sharesDeal = shares.stream()
-				.peek(share -> {
-					MidUserShare midUserShare = this.midUserShareService.getOne(
-						Wrappers.query(
-							MidUserShare.builder()
-								.userId(userId)
-								.shareId(share.getId())
-								.build())
-					);
-					if (midUserShare == null) {
-						share.setDownloadUrl(null);
-					}
-				})
-				.collect(Collectors.toList());
-		}
+
+		sharesDeal = shares.stream()
+			.peek(share -> {
+				MidUserShare midUserShare = this.midUserShareService.getOne(
+					Wrappers.query(
+						MidUserShare.builder()
+							.userId(userId)
+							.shareId(share.getId())
+							.build())
+				);
+				if (midUserShare == null) {
+					share.setDownloadUrl(null);
+				}
+			})
+			.collect(Collectors.toList());
 
 		return new PageInfo<>(sharesDeal);
 	}
