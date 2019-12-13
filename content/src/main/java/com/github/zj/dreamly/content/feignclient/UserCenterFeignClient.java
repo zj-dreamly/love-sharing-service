@@ -2,7 +2,7 @@ package com.github.zj.dreamly.content.feignclient;
 
 import com.github.zj.dreamly.content.feignclient.fallback.UserCenterFeignClientFallback;
 import com.zj.dreamly.common.constant.FeignClientConstant;
-import com.zj.dreamly.common.dto.user.UserAddBonseDTO;
+import com.zj.dreamly.common.dto.user.UserAddBonusDTO;
 import com.zj.dreamly.common.dto.user.UserDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,8 +34,8 @@ public interface UserCenterFeignClient {
 	/**
 	 * 为用户增加积分
 	 *
-	 * @param userAddBonseDTO {@link UserAddBonseDTO}
+	 * @param userAddBonusDTO {@link UserAddBonusDTO}
 	 */
 	@PutMapping(BASE_URI + "/add-bonus")
-	void addBonus(@RequestBody UserAddBonseDTO userAddBonseDTO);
+	void addBonus(@RequestBody UserAddBonusDTO userAddBonusDTO);
 }

@@ -17,11 +17,11 @@ import com.github.zj.dreamly.content.service.MidUserShareService;
 import com.github.zj.dreamly.content.service.ShareService;
 import com.github.zj.dreamly.content.util.PageInfo;
 import com.github.zj.dreamly.tool.util.StreamUtil;
-import com.zj.dreamly.common.constant.SystemConstant;
 import com.zj.dreamly.common.dto.share.ShareRequestDTO;
-import com.zj.dreamly.common.dto.user.UserAddBonseDTO;
+import com.zj.dreamly.common.dto.user.UserAddBonusDTO;
 import com.zj.dreamly.common.dto.user.UserDTO;
 import com.zj.dreamly.common.enums.AuditStatusEnum;
+import com.zj.dreamly.common.enums.BonusEventEnum;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -65,7 +65,7 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share> implements
 
 		final LambdaQueryWrapper<Share> wrapper = Wrappers.<Share>lambdaQuery()
 			.like(Share::getTitle, title);
-			wrapper.eq(Share::getAuditStatus, AuditStatusEnum.PASS.name());
+		wrapper.eq(Share::getAuditStatus, AuditStatusEnum.PASS.name());
 
 		final IPage<Share> page = this.page(new Page<>(pageNo, pageSize), wrapper);
 
@@ -122,7 +122,7 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share> implements
 
 		// 4. 扣减积分 & 往mid_user_share里插入一条数据
 		this.userCenterFeignClient.addBonus(
-			UserAddBonseDTO.builder()
+			UserAddBonusDTO.builder()
 				.userId(integerUserId)
 				.bonus(0 - price)
 				.build()
@@ -137,8 +137,25 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share> implements
 	}
 
 	@Override
-	public Share auditById(Integer id, ShareAuditDTO auditDTO) {
-		return null;
+	public Share auditById(Integer id, ShareAuditDTO auditDTO, Integer userId) {
+		// 1. 查询share是否存在，不存在或者当前的audit_status != NOT_YET，那么抛异常
+		Share share = this.getById(id);
+		if (share == null) {
+			throw new IllegalArgumentException("参数非法！该分享不存在！");
+		}
+		if (!AuditStatusEnum.NOT_YET.name().equals(share.getAuditStatus())) {
+			throw new IllegalArgumentException("参数非法！该分享已审核通过或审核不通过！");
+		}
+
+		share.setAuditStatus(AuditStatusEnum.PASS.name());
+		share.setReason(auditDTO.getReason());
+		this.updateById(share);
+
+		// 3. 如果是PASS，让用户中心去消费，并为发布人添加积分（暂时通过调用用户服务，后期通过实现MQ异步发送）
+		userCenterFeignClient.addBonus(new UserAddBonusDTO(userId, 50, BonusEventEnum.RECORDS.value,
+			BonusEventEnum.RECORDS.desc));
+
+		return share;
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package com.github.zj.dreamly.content.feignclient.fallback;
 
 import com.github.zj.dreamly.content.feignclient.UserCenterFeignClient;
-import com.zj.dreamly.common.dto.user.UserAddBonseDTO;
+import com.zj.dreamly.common.dto.user.UserAddBonusDTO;
 import com.zj.dreamly.common.dto.user.UserDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ public class UserCenterFeignClientFallback implements UserCenterFeignClient {
 	}
 
 	@Override
-	public void addBonus(UserAddBonseDTO userAddBonseDTO) {
+	public void addBonus(UserAddBonusDTO userAddBonusDTO) {
 		log.warn("[UserCenterFeignClient#addBonus]方法调用已被限流/降级.");
 	}
 }

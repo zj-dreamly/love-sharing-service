@@ -91,14 +91,14 @@ public class UserController {
 	}
 
 	@PutMapping("/add-bonus")
-	public User addBonus(@RequestBody UserAddBonseDTO userAddBonseDTO) {
-		Integer userId = userAddBonseDTO.getUserId();
+	public User addBonus(@RequestBody UserAddBonusDTO userAddBonusDTO) {
+		Integer userId = userAddBonusDTO.getUserId();
 		userService.addBonus(
 			UserAddBonusMsgDTO.builder()
 				.userId(userId)
-				.bonus(userAddBonseDTO.getBonus())
-				.description(BonusEventEnum.BUY.desc)
-				.event(BonusEventEnum.BUY.value)
+				.bonus(userAddBonusDTO.getBonus())
+				.description(userAddBonusDTO.getDesc())
+				.event(userAddBonusDTO.getEvent())
 				.build()
 		);
 		return this.userService.getById(userId);

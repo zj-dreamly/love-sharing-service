@@ -52,9 +52,10 @@ public interface ShareService extends IService<Share> {
 	 *
 	 * @param id       分享内容id
 	 * @param auditDTO {@link ShareAuditDTO}
+	 * @param userId   用户Id
 	 * @return {@link Share}
 	 */
-	Share auditById(Integer id, ShareAuditDTO auditDTO);
+	Share auditById(Integer id, ShareAuditDTO auditDTO, Integer userId);
 
 	/**
 	 * 投稿接口

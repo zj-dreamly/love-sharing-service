@@ -1,16 +1,18 @@
 package com.github.zj.dreamly.content.content;
 
-import com.zj.dreamly.common.enums.AuditStatusEnum;
 import lombok.Data;
 
+/**
+ * @author 苍海之南
+ */
 @Data
 public class ShareAuditDTO {
-    /**
-     * 审核状态
-     */
-    private AuditStatusEnum auditStatusEnum;
-    /**
-     * 原因
-     */
-    private String reason;
+	/**
+	 * 审核状态
+	 */
+	private String auditStatusEnum;
+	/**
+	 * 原因
+	 */
+	private String reason;
 }
