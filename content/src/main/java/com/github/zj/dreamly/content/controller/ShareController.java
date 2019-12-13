@@ -53,14 +53,13 @@ public class ShareController {
 	@GetMapping("/q")
 	@CheckLogin
 	public PageInfo<Share> q(
-		@RequestParam(required = false) String type,
 		@RequestParam(required = false) String title,
 		@RequestParam(required = false, defaultValue = "1") Integer pageNo,
 		@RequestParam(required = false, defaultValue = "10") Integer pageSize,
 		@RequestHeader(value = SystemConstant.TOKEN_HEADER, required = false) String token) {
 
 		Integer userId = jwtOperator.getUserId(token);
-		return this.shareService.q(type, title, pageNo, pageSize, userId);
+		return this.shareService.q(title, pageNo, pageSize, userId);
 	}
 
 	@GetMapping("/exchange/{id}")

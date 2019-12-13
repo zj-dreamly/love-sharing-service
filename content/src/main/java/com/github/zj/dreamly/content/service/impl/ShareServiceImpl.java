@@ -61,19 +61,12 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share> implements
 	}
 
 	@Override
-	public PageInfo<Share> q(String type, String title, Integer pageNo, Integer pageSize, Integer userId) {
-
-		final UserDTO user = userCenterFeignClient.findUserById(userId);
+	public PageInfo<Share> q(String title, Integer pageNo, Integer pageSize, Integer userId) {
 
 		final LambdaQueryWrapper<Share> wrapper = Wrappers.<Share>lambdaQuery()
 			.like(Share::getTitle, title);
-
-		if (AuditStatusEnum.NOT_YET.name().equals(type) &&
-		user.getRoles().equals(SystemConstant.ROLE_ADMIN)) {
-			wrapper.eq(Share::getAuditStatus, AuditStatusEnum.NOT_YET.name());
-		} else {
 			wrapper.eq(Share::getAuditStatus, AuditStatusEnum.PASS.name());
-		}
+
 		final IPage<Share> page = this.page(new Page<>(pageNo, pageSize), wrapper);
 
 		final List<Share> shares = page.getRecords();
