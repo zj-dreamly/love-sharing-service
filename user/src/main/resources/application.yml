@@ -5,17 +5,17 @@ spring:
   profiles:
     active: default
   datasource:
-    url: jdbc:mysql://localhost/love-sharing?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true
+    url: jdbc:mysql://118.25.43.40:8000/love-sharing?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true
     username: root
-    password: root
+    password: synco
   application:
     name: user-center
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: 118.25.43.40:8848
       config:
-        server-addr: localhost:8848
+        server-addr: 118.25.43.40:8848
   jackson:
     date-format: yyyy-MM-dd
     time-zone: GMT+8
