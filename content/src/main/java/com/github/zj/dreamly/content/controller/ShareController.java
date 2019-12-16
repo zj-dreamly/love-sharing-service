@@ -1,5 +1,6 @@
 package com.github.zj.dreamly.content.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.github.zj.dreamly.content.content.ShareDTO;
 import com.github.zj.dreamly.content.entity.Share;
 import com.github.zj.dreamly.content.service.ShareService;
@@ -10,6 +11,7 @@ import com.zj.dreamly.common.dto.share.ShareRequestDTO;
 import com.zj.dreamly.common.util.JwtOperator;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +25,7 @@ import java.util.List;
  * @author 苍海之南
  * @since 2019-12-11
  */
+@Slf4j
 @RestController
 @AllArgsConstructor
 @RequestMapping("/shares")
@@ -32,6 +35,7 @@ public class ShareController {
 
 	private final ShareService shareService;
 	private final JwtOperator jwtOperator;
+	private static final String BAD_TOKEN = "[object Undefined]";
 
 	@GetMapping("/preview/{id}")
 	@CheckLogin
@@ -40,7 +44,6 @@ public class ShareController {
 	}
 
 	@GetMapping("/{id}")
-	@CheckLogin
 	public ShareDTO detail(@PathVariable Integer id) {
 		return this.shareService.getByShareId(id);
 	}
@@ -51,14 +54,17 @@ public class ShareController {
 	}
 
 	@GetMapping("/q")
-	@CheckLogin
 	public PageInfo<Share> q(
 		@RequestParam(required = false) String title,
 		@RequestParam(required = false, defaultValue = "1") Integer pageNo,
 		@RequestParam(required = false, defaultValue = "10") Integer pageSize,
 		@RequestHeader(value = SystemConstant.TOKEN_HEADER, required = false) String token) {
 
-		Integer userId = jwtOperator.getUserId(token);
+		Integer userId = null;
+		if (!StrUtil.equals(token, BAD_TOKEN) && StrUtil.isNotBlank(token)) {
+			userId = jwtOperator.getUserId(token);
+		}
+
 		return this.shareService.q(title, pageNo, pageSize, userId);
 	}
 

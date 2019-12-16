@@ -43,7 +43,7 @@ public class AuthAspect {
 			// 2. 校验token是否合法&是否过期；如果不合法或已过期直接抛异常；如果合法放行
 			Boolean isValid = jwtOperator.validateToken(token);
 			if (!isValid) {
-				throw new SecurityException("Token不合法！");
+				throw new SecurityException("Token invalided.");
 			}
 
 			// 3. 如果校验成功，那么就将用户的信息设置到request的attribute里面
@@ -52,7 +52,7 @@ public class AuthAspect {
 			request.setAttribute("wxNickname", claims.get("wxNickname"));
 			request.setAttribute("role", claims.get("role"));
 		} catch (Throwable throwable) {
-			throw new SecurityException("Token不合法");
+			throw new SecurityException("Token invalided.");
 		}
 	}
 

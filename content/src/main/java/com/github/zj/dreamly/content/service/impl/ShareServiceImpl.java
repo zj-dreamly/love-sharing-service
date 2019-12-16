@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Struct;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -64,12 +65,20 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share> implements
 	public PageInfo<Share> q(String title, Integer pageNo, Integer pageSize, Integer userId) {
 
 		final LambdaQueryWrapper<Share> wrapper = Wrappers.<Share>lambdaQuery()
-			.like(Share::getTitle, title);
-		wrapper.eq(Share::getAuditStatus, AuditStatusEnum.PASS.name());
+			.eq(Share::getAuditStatus, AuditStatusEnum.PASS.name());
+
+		if (StrUtil.isNotBlank(title)) {
+			wrapper.like(Share::getTitle, title);
+		}
 
 		final IPage<Share> page = this.page(new Page<>(pageNo, pageSize), wrapper);
 
 		final List<Share> shares = page.getRecords();
+
+		if (null == userId){
+			return new PageInfo<>(shares.stream()
+				.peek(share -> share.setDownloadUrl(null)).collect(Collectors.toList()));
+		}
 		List<Share> sharesDeal;
 
 		sharesDeal = shares.stream()
