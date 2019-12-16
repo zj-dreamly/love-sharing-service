@@ -133,6 +133,10 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share> implements
 				.shareId(id)
 				.build()
 		);
+
+		//增加购买次数
+		share.setBuyCount(share.getBuyCount() + 1);
+		this.updateById(share);
 		return share;
 	}
 
