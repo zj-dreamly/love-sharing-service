@@ -45,3 +45,5 @@ feign:
 ```
 user-center-dev.yml基本同上，把application name改了就行`user-center`
 
+#### 由于服务器机器配置不高，此版本未使用MQ实现
+
