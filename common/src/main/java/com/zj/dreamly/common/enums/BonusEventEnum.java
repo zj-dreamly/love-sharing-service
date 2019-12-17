@@ -16,11 +16,11 @@ public enum BonusEventEnum {
 	 */
 	BUY("BUY", "兑换"),
 
-	SIGN("sign", "签到"),
+	SIGN("SIGN", "签到"),
 
-	RECORDS("records", "投稿"),
+	RECORDS("CONTRIBUTE", "投稿"),
 
-	SHARE("share", "分享");
+	SHARE("FORWARD", "分享");
 
 	public String value;
 
@@ -29,5 +29,15 @@ public enum BonusEventEnum {
 	BonusEventEnum(String value, String desc) {
 		this.value = value;
 		this.desc = desc;
+	}
+
+	public static String getDesc(String event) {
+		for (BonusEventEnum value : BonusEventEnum.values()) {
+			if (event.equals(value.value)) {
+				return value.desc;
+			}
+		}
+
+		return null;
 	}
 }

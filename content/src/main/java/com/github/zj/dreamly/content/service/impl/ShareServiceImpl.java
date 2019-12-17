@@ -27,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.Struct;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -75,7 +74,7 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share> implements
 
 		final List<Share> shares = page.getRecords();
 
-		if (null == userId){
+		if (null == userId) {
 			return new PageInfo<>(shares.stream()
 				.peek(share -> share.setDownloadUrl(null)).collect(Collectors.toList()));
 		}
@@ -130,16 +129,19 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share> implements
 		}
 
 		// 4. 扣减积分 & 往mid_user_share里插入一条数据
-		this.userCenterFeignClient.addBonus(
-			UserAddBonusDTO.builder()
-				.userId(integerUserId)
-				.bonus(0 - price)
-				.build()
-		);
 		this.midUserShareService.save(
 			MidUserShare.builder()
 				.userId(integerUserId)
 				.shareId(id)
+				.build()
+		);
+
+		// 5.写日志记录积分变动
+		this.userCenterFeignClient.addBonus(
+			UserAddBonusDTO.builder()
+				.userId(integerUserId)
+				.bonus(0 - price)
+				.event(BonusEventEnum.BUY.value)
 				.build()
 		);
 
@@ -165,8 +167,7 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share> implements
 		this.updateById(share);
 
 		// 3. 如果是PASS，让用户中心去消费，并为发布人添加积分（暂时通过调用用户服务，后期通过实现MQ异步发送）
-		userCenterFeignClient.addBonus(new UserAddBonusDTO(userId, 50, BonusEventEnum.RECORDS.value,
-			BonusEventEnum.RECORDS.desc));
+		userCenterFeignClient.addBonus(new UserAddBonusDTO(userId, 50, BonusEventEnum.RECORDS.value));
 
 		return share;
 	}

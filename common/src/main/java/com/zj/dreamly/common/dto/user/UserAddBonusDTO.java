@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
 public class UserAddBonusDTO {
     private Integer userId;
@@ -20,7 +19,7 @@ public class UserAddBonusDTO {
     private Integer bonus;
 
 	/**
-	 * 时间类型
+	 * 事件类型
 	 */
 	private String event;
 	/**
@@ -28,4 +27,9 @@ public class UserAddBonusDTO {
 	 */
 	private String desc;
 
+	public UserAddBonusDTO(Integer userId, Integer bonus, String event) {
+		this.userId = userId;
+		this.bonus = bonus;
+		this.event = event;
+	}
 }

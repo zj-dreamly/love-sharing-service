@@ -11,6 +11,7 @@ import com.zj.dreamly.common.constant.SystemConstant;
 import com.zj.dreamly.common.dto.messaging.UserAddBonusMsgDTO;
 import com.zj.dreamly.common.dto.share.ShareResponseDTO;
 import com.zj.dreamly.common.dto.user.*;
+import com.zj.dreamly.common.enums.BonusEventEnum;
 import com.zj.dreamly.common.util.JwtOperator;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
@@ -91,12 +92,13 @@ public class UserController {
 
 	@PutMapping("/add-bonus")
 	public User addBonus(@RequestBody UserAddBonusDTO userAddBonusDTO) {
+
 		Integer userId = userAddBonusDTO.getUserId();
 		userService.addBonus(
 			UserAddBonusMsgDTO.builder()
 				.userId(userId)
 				.bonus(userAddBonusDTO.getBonus())
-				.description(userAddBonusDTO.getDesc())
+				.description(BonusEventEnum.getDesc(userAddBonusDTO.getEvent()))
 				.event(userAddBonusDTO.getEvent())
 				.build()
 		);

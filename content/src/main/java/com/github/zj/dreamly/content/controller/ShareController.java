@@ -44,6 +44,7 @@ public class ShareController {
 	}
 
 	@GetMapping("/{id}")
+	@CheckLogin
 	public ShareDTO detail(@PathVariable Integer id) {
 		return this.shareService.getByShareId(id);
 	}
@@ -54,6 +55,7 @@ public class ShareController {
 	}
 
 	@GetMapping("/q")
+	@CheckLogin
 	public PageInfo<Share> q(
 		@RequestParam(required = false) String title,
 		@RequestParam(required = false, defaultValue = "1") Integer pageNo,
