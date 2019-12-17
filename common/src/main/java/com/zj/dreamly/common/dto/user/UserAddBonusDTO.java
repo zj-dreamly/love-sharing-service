@@ -11,12 +11,13 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserAddBonusDTO {
-    private Integer userId;
-    /**
-     * 积分
-     */
-    private Integer bonus;
+	private Integer userId;
+	/**
+	 * 积分
+	 */
+	private Integer bonus;
 
 	/**
 	 * 事件类型
@@ -26,10 +27,4 @@ public class UserAddBonusDTO {
 	 * 描述
 	 */
 	private String desc;
-
-	public UserAddBonusDTO(Integer userId, Integer bonus, String event) {
-		this.userId = userId;
-		this.bonus = bonus;
-		this.event = event;
-	}
 }

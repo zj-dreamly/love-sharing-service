@@ -167,7 +167,9 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share> implements
 		this.updateById(share);
 
 		// 3. 如果是PASS，让用户中心去消费，并为发布人添加积分（暂时通过调用用户服务，后期通过实现MQ异步发送）
-		userCenterFeignClient.addBonus(new UserAddBonusDTO(userId, 50, BonusEventEnum.RECORDS.value));
+		userCenterFeignClient.addBonus(UserAddBonusDTO.builder()
+			.userId(userId).bonus(50)
+			.event(BonusEventEnum.RECORDS.value).build());
 
 		return share;
 	}
