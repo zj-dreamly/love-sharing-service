@@ -64,7 +64,8 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share> implements
 	public PageInfo<Share> q(String title, Integer pageNo, Integer pageSize, Integer userId) {
 
 		final LambdaQueryWrapper<Share> wrapper = Wrappers.<Share>lambdaQuery()
-			.eq(Share::getAuditStatus, AuditStatusEnum.PASS.name());
+			.eq(Share::getAuditStatus, AuditStatusEnum.PASS.name())
+			.orderByDesc(Share::getId);
 
 		if (StrUtil.isNotBlank(title)) {
 			wrapper.like(Share::getTitle, title);
