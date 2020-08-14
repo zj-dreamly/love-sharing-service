@@ -120,7 +120,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 	}
 
 	@Override
-	public User login(UserLoginDTO loginDTO, String openId) {
+	public synchronized User login(UserLoginDTO loginDTO, String openId) {
 		User user = this.getOne(Wrappers.<User>lambdaQuery().eq(User::getWxId, openId));
 		if (user == null) {
 			User userToSave = User.builder()
