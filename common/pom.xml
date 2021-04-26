@@ -21,7 +21,7 @@
         <jjwt.version>0.10.5</jjwt.version>
         <fast.json.version>1.2.58</fast.json.version>
         <lang3.version>3.9</lang3.version>
-        <commons-io.version>2.6</commons-io.version>
+        <commons-io.version>2.7</commons-io.version>
         <dreamly.version>0.0.3</dreamly.version>
     </properties>
 
